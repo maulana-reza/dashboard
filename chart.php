@@ -5,9 +5,9 @@ $where = !empty($cek) ? $cek : '';
 $group_by = " GROUP BY nama,".(@$_GET['show_by']=="bulan" ? "MONTH(tanggal)" : "YEAR(tanggal)");
 
 if ($where) {
-	$datas = _get('tbgaji10',[_sum($sum).' as gaji ','tanggal','nama'],' WHERE '.$where.$group_by);
+	$datas = _get('tbgaji10',[_sum($sum).' as gaji ','tanggal','nama'],' WHERE '.$where.$group_by._limit());
 }else{
-	 $datas = _get('tbgaji10',[_sum($sum).' as gaji','tanggal','nama'],$group_by);	
+	 $datas = _get('tbgaji10',[_sum($sum).' as gaji','tanggal','nama'],$group_by._limit());	
 }
 function date_str($data, $format){
 	return date($format,strtotime($data));

@@ -1,6 +1,11 @@
 <?php
 $koneksi = mysqli_connect("localhost","root","asobiasobase","dashboard");
 
+$halaman = 5;
+$page = isset($_GET["page"]) ? (int)$_GET["page"] : 0;
+$mulai = ($page>1) ? ($page * $halaman) - $halaman : 0;
+$total = _get('tbgaji10',['count(distinct nama) as total'])[0]['total'];
+$pages = ceil($total/$halaman);
 // var sum : jumlah gaji
 $sum  = [
       'tambah' => [
@@ -288,4 +293,13 @@ function _sum($data){
   $add  = '('.implode("+", $data['tambah']).')';
   $kurang = '('.implode("+", $data['kurang']).')';
   return $add."-".$kurang;
+}
+function _limit(){
+
+global $halaman;
+global $page;
+global $mulai;
+global $total;
+global $pages;
+  return $limit = "LIMIT $mulai , $halaman";
 }

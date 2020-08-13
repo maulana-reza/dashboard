@@ -1,13 +1,7 @@
 <?php
 
-$halaman = 5;
-$page = isset($_GET["page"]) ? (int)$_GET["page"] : 0;
-$mulai = ($page>1) ? ($page * $halaman) - $halaman : 0;
-$total = _get('tbgaji10',['count(distinct nama) as total'])[0]['total'];
-$pages = ceil($total/$halaman);   
-$limit = "LIMIT $mulai , $halaman";
 
-$gaji = _get("tbgaji10",[''._sum($sum).' as gaji, nama,YEAR(tanggal) as tanggal'],'GROUP BY nama,YEAR(tanggal) ORDER BY nama,YEAR(tanggal) '.$limit);
+$gaji = _get("tbgaji10",[''._sum($sum).' as gaji, nama,YEAR(tanggal) as tanggal'],'GROUP BY nama,YEAR(tanggal) ORDER BY nama,YEAR(tanggal) '._limit());
 $data = to_one_column($gaji);
 function if_zero($data){
 	return $data > 0 ? $data : 0;
