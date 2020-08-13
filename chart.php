@@ -5,9 +5,9 @@ $where = !empty($cek) ? $cek : '';
 $group_by = " GROUP BY nama,".(@$_GET['show_by']=="bulan" ? "MONTH(tanggal)" : "YEAR(tanggal)");
 
 if ($where) {
-	$datas = _get('tbgaji10',[_sum($sum).' as gaji ','tanggal'],' WHERE '.$where.$group_by);
+	$datas = _get('tbgaji10',[_sum($sum).' as gaji ','tanggal','nama'],' WHERE '.$where.$group_by);
 }else{
-	 $datas = _get('tbgaji10',[_sum($sum).' as gaji','tanggal'],$group_by);	
+	 $datas = _get('tbgaji10',[_sum($sum).' as gaji','tanggal','nama'],$group_by);	
 }
 function date_str($data, $format){
 	return date($format,strtotime($data));
@@ -19,18 +19,43 @@ function chart_line($data){
 			y : '.($value['gaji'] > 0 ? (int)$value['gaji'] : 0).',
 		}';
 	}
-	return @$datas ? '['.implode(',', $datas).']' : false;
+	return @$datas ? '['.implode(',', $datas).']' : '[]';
 }
-$charts = chart_line($datas);
+function chart_builder($user){
+	foreach ($user as $key => $value) {
+		$data [] = '{
+			type: "line",
+			showInLegend: true,
+			name: "'.$key.'",
+			markerType: "square",
+			toolTipContent: get_filter_ontooltip()+"{x} : {y}",
+			xValueFormatString: "YYYY",
+			dataPoints: '. chart_line($value).',
+		}';
+	}
+	return @$data ? implode(',', $data) : '';
 
+}
+
+function group_names($data){
+	foreach ($data as $key => $value) {
+		if ($value['tanggal'] != @$result[$value['nama']]['tanggal']) {
+			$result[$value['nama']][] = $value;
+		}
+	}
+	return $result;
+}
+$charts = group_names($datas); 
+$charts = chart_builder($charts);
 ?>
-<div id="chartContainer" class="col-md-8"></div>
+<div id="chartContainer" class="col-md-8 mr-1" height="400px"></div>
 <script>
 
 window.onload = function () {
 
 var chart = new CanvasJS.Chart("chartContainer", {
 	animationEnabled: true,
+	height: 400,
 	theme: "light2",
 	title:{
 		text: "Site Traffic"
@@ -59,15 +84,7 @@ var chart = new CanvasJS.Chart("chartContainer", {
 		dockInsidePlotArea: true,
 		itemclick: toogleDataSeries
 	},
-	data: [{
-		type: "line",
-		showInLegend: true,
-		name: "Total Visit",
-		markerType: "square",
-		toolTipContent: get_filter_ontooltip()+"{x} : {y}",
-		xValueFormatString: "YYYY",
-		dataPoints: <?= $charts ? $charts : '[]' ;?>,
-	}]
+	data: [<?= $charts; ?>]
 });
 chart.render();
 

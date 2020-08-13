@@ -1,6 +1,6 @@
 <?php
 
-$halaman = 10;
+$halaman = 5;
 $page = isset($_GET["page"]) ? (int)$_GET["page"] : 0;
 $mulai = ($page>1) ? ($page * $halaman) - $halaman : 0;
 $total = _get('tbgaji10',['count(distinct nama) as total'])[0]['total'];
@@ -32,7 +32,7 @@ function pagination($pages)
 
 }
 ?>
-<div class="col-md-4">
+<div class="col-md-3">
 <table class="table col-md-4" style="max-width: 35% !important;">
 	<thead>
 		<tr>
