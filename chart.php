@@ -2,12 +2,12 @@
 <?php 
 $cek = get_filter();
 $where = !empty($cek) ? $cek : '';
-if ($where) {
-	$group_by = " GROUP BY ".(@$_GET['show_by']=="bulan" ? "MONTH(tanggal)" : "YEAR(tanggal)");
+$group_by = " GROUP BY nama,".(@$_GET['show_by']=="bulan" ? "MONTH(tanggal)" : "YEAR(tanggal)");
 
-	$datas = _get('tbgaji10',['*'],' WHERE '.$where.$group_by);
+if ($where) {
+	$datas = _get('tbgaji10',[_sum($sum).' as gaji ','tanggal'],' WHERE '.$where.$group_by);
 }else{
-	 $datas = _get('tbgaji10',['*']);	
+	 $datas = _get('tbgaji10',[_sum($sum).' as gaji','tanggal'],$group_by);	
 }
 function date_str($data, $format){
 	return date($format,strtotime($data));
@@ -16,7 +16,7 @@ function chart_line($data){
 	foreach ($data as $key => $value) {
 		$datas[] = '{
 			x : new Date('.date_str($value['tanggal'],'Y,m,d').'),
-			y : '.($value['gaji'] ? (int)$value['gaji'] : 1000).',
+			y : '.($value['gaji'] > 0 ? (int)$value['gaji'] : 0).',
 		}';
 	}
 	return @$datas ? '['.implode(',', $datas).']' : false;
@@ -36,7 +36,7 @@ var chart = new CanvasJS.Chart("chartContainer", {
 		text: "Site Traffic"
 	},
 	axisX:{
-		valueFormatString: "MMM YYYY",
+		valueFormatString: "<?= get_filter_show_by()['chart'] ?>",
 		crosshair: {
 			enabled: true,
 			snapToDataPoint: true

@@ -9,9 +9,9 @@ function select_option_from_db($table,$name,$selected_id = null)
   $key_v = key($selected_id);
   $tables = _get($table);
   foreach ($tables as $key => $value) {
-    $selected = $value[$name['nama']]==$selected_id[$key_v] ? "selected" : "";
+    $selected = @$value[$name['nama']]==$selected_id[$key_v] ? "selected" : "";
     $option[] = '
-      <option value="'.$value[$name['nama']].'" '.$selected.'>'.$value[$name['nama']].'</option>
+      <option value="'.@$value[$name['nama']].'" '.$selected.'>'.@$value[$name['nama']].'</option>
     ';
   }
   $select = '
@@ -24,7 +24,12 @@ function select_option_from_db($table,$name,$selected_id = null)
 }
 function get_filter_ontooltip($current_filter)
 {
+	$additional[] = [
+				'title'=> 'Filter Nama',
+				'index'=> 'nama',
+			];
 	$new_arr = _array_flip($_GET);
+	$current_filter = array_merge($current_filter,$additional);
 	$new_cur = _array_change($current_filter);
 	foreach ($new_arr as $key => $value) {
 		if (($unset = array_search($value, $new_cur)) > -1 && @$_GET[$current_filter[$unset]['index']]) {
@@ -37,7 +42,7 @@ function _array_flip($array){
 	foreach ($array as $key => $value) {
 		$new_arr[] = $key; 
 	}
-	return $new_arr;
+	return @$new_arr ? $new_arr : [];
 }
 function _array_change($array)
 {
@@ -47,7 +52,7 @@ function _array_change($array)
 	return $new_arr;
 }
 /*
- *index : field untuk pencarian di table tbgaji10
+ *index : field untuk pencarian di table tbgaji
  *table : nama table
  *name  : field dari table yang di pilih
  *title : label untuk filter
@@ -88,7 +93,7 @@ $filter[] = [
 		<div class="form-group">
 			<label for="divisi"><?= $value['title'];?></label>
 				<?php
-				$name[$value['index']] = $_GET[$value['index']];
+				$name[$value['index']] = @$_GET[$value['index']];
 				echo select_option_from_db($value['table'],['nama'=>$value['name']],@$name);
 				unset($name);
 				?>
