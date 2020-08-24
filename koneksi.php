@@ -90,6 +90,7 @@ $sum  = [
         't_pajak' ,
       ]
     ];
+  
 // Check connection
 if (mysqli_connect_errno()) {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
@@ -267,7 +268,8 @@ function get_filter($add = [])
 {
   $except = [
     'show',
-    'page'
+    'page',
+    'label'
   ];
   $except = array_merge($except,$add);
   foreach ($_GET as $key => $value) {
@@ -303,3 +305,22 @@ global $total;
 global $pages;
   return $limit = "LIMIT $mulai , $halaman";
 }
+function paginate($current_page,$limit){
+  $limit_for = ($current_page+2 >= $limit ? $limit : $current_page+2);
+  $first = $current_page > 1 ? (($current_page-2) < 1 ? 1 : $current_page-2) : 0;
+  for ($i=$first; $i < $limit_for; $i++) {
+    if ($i = $first) {
+    $page[] = "first";
+
+    }
+  }
+}
+function sum_as($data){
+  foreach ($data as $key => $value) {
+    $result[] = "sum( $value ) as $value";
+  }
+  return implode(",", $result);
+}
+
+
+// builder chart pendidikan

@@ -48,7 +48,10 @@ function group_names($data){
 $charts = group_names($datas); 
 $charts = chart_builder($charts);
 ?>
-<div id="chartContainer" class="col-md-8 mr-1" height="400px"></div>
+<div class="col-md-7 border">
+<div id="chartContainer" class="col-md-8 mr-1 " height="400px"></div>
+	
+</div>
 <script>
 
 window.onload = function () {

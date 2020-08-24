@@ -84,9 +84,17 @@ $filter[] = [
 				'index'=> 'jenis',
 			];
 
+
+$filter[] = [
+				'title'=> 'Filter Nama Pegawai',
+				'name' => 'nama_pegawai',
+				'table'=> 'pegawai',
+				'index'=> 'nama',
+			];
+
 ?> 
-<div>
-	<form action="<?= url('');?>" method="get" id="filter">
+<div class="col-md-12 border">
+	<form action="<?= url('');?>" method="get" id="filter" >
 		<input type="hidden" name="nama" value="<?= @$_GET['nama'];?>">
 		<?php foreach ($filter as $key => $value): ?>
 			

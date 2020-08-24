@@ -12,16 +12,14 @@
 
 </head>
 <body>
-	<div class="container p-2">
-		<div class="row">
+		<div class="row p-2">
 	<?php
 	include 'koneksi.php';
-	include 'chart.php';
 	include 'table.php';
+	include 'chart.php';
 	include 'filter.php';
 	?>
 		</div>
-	</div>
 
 </body>
 </html>
